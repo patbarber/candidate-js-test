@@ -7,7 +7,6 @@
         ref="can"
         width="800"
         height="800"
-        v-on:MouseDown="onSelect"
       ></canvas>
 
       <div id="controls" class="bg-gray-300">
@@ -15,7 +14,12 @@
           <button id="addNewSquare" class="button" @click="addNewSquare">
             Add New Square
           </button>
-          <select v-model="color" class="w-64 h-12 m-auto">
+          <select
+            v-if="objectSelected"
+            v-model="color"
+            @change="changeColor"
+            class="w-64 h-12 m-auto"
+          >
             <option>red</option>
             <option>green</option>
             <option>blue</option>
@@ -26,6 +30,13 @@
             @click="evenlySpaceVertically"
           >
             Evenly Space Vertically
+          </button>
+          <button
+            id="evenlySpaceVertically"
+            class="button"
+            @click="evenlySpaceHorizontal"
+          >
+            Evenly Space Horizontally
           </button>
           <button
             id="getCurrentObjects"
@@ -51,6 +62,8 @@ export default {
   data: () => ({
     canvas: null,
     color: "blue",
+    selected: null,
+    objectSelected: false,
   }),
   mounted() {
     const ref = this.$refs.can;
@@ -62,7 +75,23 @@ export default {
       left: 0,
       top: 0,
     });
+    const rect2 = new fabric.Rect({
+      fill: "red",
+      width: 100,
+      height: 100,
+      left: 200,
+      top: 100,
+    });
     this.canvas.add(rect);
+    this.canvas.add(rect2);
+
+    this.canvas.on({
+      "selection:updated": () => (this.objectSelected = true),
+      "selection:created": () => (this.objectSelected = true),
+    });
+    this.canvas.on({
+      "selection:cleared": () => (this.objectSelected = false),
+    });
   },
   methods: {
     addNewSquare() {
@@ -78,7 +107,25 @@ export default {
       this.canvas.add(rectAdded);
     },
     evenlySpaceVertically() {
-      //To be implemented
+      let minTopValue = this.canvas
+        .getObjects()
+        .reduce((a, b) => Math.min(a.top, b.top));
+      this.canvas.getObjects().forEach((item) => {
+        item.set({ top: minTopValue });
+      });
+      this.canvas.renderAll();
+    },
+    evenlySpaceHorizontal() {
+      let minLeftValue = this.canvas
+        .getObjects()
+        .reduce((a, b) => Math.min(a.left, b.left));
+
+      this.canvas.getObjects().forEach((item, index, objects) => {
+        if (index > 0) {
+          item.set({ left: minLeftValue + objects[index - 1].width });
+        }
+      });
+      this.canvas.renderAll();
     },
     reRenderCanvas() {
       this.canvas.renderAll();
@@ -87,12 +134,10 @@ export default {
       console.log(this.canvas.getObjects());
       return this.canvas.getObjects();
     },
-    onSelect() {
-      console.log("mousedown");
-  /*     this.canvas.on('mouse:down', function() {
-        console.log('éve')
-      }) */
-    }
+    changeColor() {
+      this.canvas.getActiveObject().set("fill", this.color);
+      this.canvas.renderAll();
+    },
   },
 };
 </script>
