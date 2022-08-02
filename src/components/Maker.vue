@@ -107,23 +107,26 @@ export default {
       this.canvas.add(rectAdded);
     },
     evenlySpaceVertically() {
-      let minTopValue = this.canvas
-        .getObjects()
-        .reduce((a, b) => Math.min(a.top, b.top));
-      this.canvas.getObjects().forEach((item) => {
-        item.set({ top: minTopValue });
+      let sorted = this.canvas.getObjects().sort((a, b) => {
+        return a.top - b.top;
+      });
+      sorted.forEach((item, i, array) => {
+        if (i > 0) {
+          item.set({ top: array[i - 1].top });
+        }
+        item.setCoords();
       });
       this.canvas.renderAll();
     },
     evenlySpaceHorizontal() {
-      let minLeftValue = this.canvas
-        .getObjects()
-        .reduce((a, b) => Math.min(a.left, b.left));
-
-      this.canvas.getObjects().forEach((item, index, objects) => {
-        if (index > 0) {
-          item.set({ left: minLeftValue + objects[index - 1].width });
+      let sorted = this.canvas.getObjects().sort((a, b) => {
+        return a.top - b.top;
+      });
+      sorted.forEach((item, i, array) => {
+        if (i > 0) {
+          item.set({ left: array[i - 1].left + array[i - 1].width });
         }
+        item.setCoords();
       });
       this.canvas.renderAll();
     },
