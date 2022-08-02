@@ -119,11 +119,11 @@ export default {
     },
     evenlySpaceHorizontal() {
       let sorted = this.canvas.getObjects().sort((a, b) => {
-        return a.top - b.top;
+        return a.left - b.left;
       });
       sorted.forEach((item, i, array) => {
         if (i > 0) {
-          item.set({ left: array[i - 1].left + array[i - 1].width });
+          item.set({ left: array[i - 1].left + array[i - 1].width + 5 });
         }
         item.setCoords();
       });
