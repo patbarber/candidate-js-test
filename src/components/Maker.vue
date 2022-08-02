@@ -75,15 +75,7 @@ export default {
       left: 0,
       top: 0,
     });
-    const rect2 = new fabric.Rect({
-      fill: "red",
-      width: 100,
-      height: 100,
-      left: 200,
-      top: 100,
-    });
     this.canvas.add(rect);
-    this.canvas.add(rect2);
 
     this.canvas.on({
       "selection:updated": () => (this.objectSelected = true),
@@ -95,15 +87,22 @@ export default {
   },
   methods: {
     addNewSquare() {
-      //To be implemented
-
+      const numberOfObjects = this.canvas.getObjects().length;
       const rectAdded = new fabric.Rect({
         fill: this.color,
         width: 100,
         height: 100,
         left: 0,
         top: 0,
+        stroke: "black"
       });
+      if (numberOfObjects >= 1) {
+        this.canvas.getObjects().forEach((item) => {
+          if (item.intersectsWithObject(rectAdded)) {
+            rectAdded.set({ left: item.left + 5  });
+          }
+        });
+      }
       this.canvas.add(rectAdded);
     },
     evenlySpaceVertically() {
