@@ -1,16 +1,20 @@
 <template>
   <div class="hello">
     <h1 class="text-center bg-gray-600 text-white text-2xl">Maker</h1>
-    <div class="grid grid-flow-col grid-cols-2 m-2">
-      <canvas
-        class="w-fit border-2 border-black"
-        ref="can"
-        width="800"
-        height="800"
-      ></canvas>
+    <div
+      class="grid auto-cols-min grid-cols-2 m-auto mt-2 max-w-max justify-center gap-2"
+    >
+      <div class="max-w-max">
+        <canvas
+          class="w-fit border-2 border-black"
+          ref="can"
+          width="800"
+          height="800"
+        ></canvas>
+      </div>
 
-      <div id="controls" class="bg-gray-300">
-        <div class="grid grid-cols-1 gap-4 justify-center mt-12">
+      <div id="controls" class="bg-gray-300 max-w-max">
+        <div class="grid grid-cols-1 gap-4 justify-center mt-12 px-8 py-y">
           <button id="addNewSquare" class="button" @click="addNewSquare">
             Add New Square
           </button>
@@ -94,12 +98,12 @@ export default {
         height: 100,
         left: 0,
         top: 0,
-        stroke: "black"
+        stroke: "black",
       });
       if (numberOfObjects >= 1) {
         this.canvas.getObjects().forEach((item) => {
           if (item.intersectsWithObject(rectAdded)) {
-            rectAdded.set({ left: item.left + 5  });
+            rectAdded.set({ left: item.left + 5 });
           }
         });
       }
